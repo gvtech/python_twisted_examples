@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <script type="text/javascript">
+         var socket = null;
+         var uid=null;
+         var isopen = false;
+         var callback=null;
+
+         window.onload = function() {
+
+            socket = new WebSocket("ws://localhost:9000");
+
+            socket.onopen = function() {
+               console.log("Connected!");
+               isopen = true;
+            }
+
+            socket.onmessage = function(e) {
+               if (typeof e.data == "string") {
+                  console.log("Position received: " + e.data);
+                  pos=JSON.parse(e.data);
+                  if("setuid" in pos) {
+                    uid=pos["setuid"]
+                  }
+                  else
+                   if(callback)
+                      callback.move(pos["uid"],pos["x"],pos["y"])
+               }
+            }
+
+            socket.onclose = function(e) {
+               console.log("Connection closed.");
+               socket = null;
+               isopen = false;
+            }
+         };
+
+         function sendPosition(uid,x,y) {
+            if (isopen) {
+               socket.send(JSON.stringify({"uid":uid,"x":x,"y":y}));
+               console.log("Position sent.");
+            } else {
+               console.log("Connection not opened.")
+            }
+         };
+
+      </script>
+   </head>
+ <body>
+      <p>Snake on browser</p>
+<canvas id="game" width="800" height="600"></canvas>
+<script>
+var Snake = function(context,color) {
+      this.color = color;
+	  this.snake = [];
+	  this.context=context;
+  	}
+
+ Snake.prototype.draw = function (x,y,color) {
+      this.context.beginPath();
+      this.context.arc(x, y, 5, 0, 2 * Math.PI, false);
+      this.context.fillStyle = color;
+      this.context.fill();
+
+ 	}
+
+ Snake.prototype.move = function (x,y) {
+    this.draw(x,y,this.color);
+    this.snake.push([x,y]);
+    if(this.snake.length > 30) {
+       coord=this.snake.shift();
+       this.draw(coord[0],coord[1],'#ffffff');
+    }
+ }
+
+
+
+var World = function() {
+      var canvas = document.getElementById('game');
+      this.context = canvas.getContext('2d');
+      this.localsnake= new Snake(this.context,'#003300');
+	  this.remotesnakes=[];
+}
+
+World.prototype.move = function(uid,x,y) {
+    if(!(uid in this.remotesnakes)) {
+      this.remotesnakes[uid]=new Snake(this.context,'#330000');
+    }
+    this.remotesnakes[uid].move(x,y);
+}
+
+var world = new World();
+document.getElementById('game').addEventListener("mousemove", function(event) {
+    world.localsnake.move(event.clientX,event.clientY);
+    sendPosition(uid,event.clientX,event.clientY);
+    });
+callback=world;
+
+</script>
+
+</body>
+</html>

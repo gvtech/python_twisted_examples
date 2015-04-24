@@ -1,5 +1,5 @@
 ## python_twisted_examples
-Some exemple of code using python twisted
+Some example of code using python twisted
 This examples was the support of a meetup presentation:
 http://www.meetup.com/Groupe-dutilisateurs-Python-Grenoble/events/220731341/
 
@@ -7,9 +7,9 @@ http://www.meetup.com/Groupe-dutilisateurs-Python-Grenoble/events/220731341/
 - testdefer.py basic example of defer and usage in the inlineCallback
 
 ## HTTP:
-- httpclient.py exemple
-- locator.py IP locator exemple using defer
-- locator_inline.py IP locator exemple using inlineCallback
+- httpclient.py example
+- locator.py IP locator example using defer
+- locator_inline.py IP locator example using inlineCallback
 - basic_http_server.py a simple http server equivaltent to SimpleHTTPServer but more robust
 
 ## Simple position sharing:
@@ -20,7 +20,7 @@ http://www.meetup.com/Groupe-dutilisateurs-Python-Grenoble/events/220731341/
 - snake.html browser version of the game
 
 ## Proxy Server:
-- simpleproxy.py Basic Proxy servereasy to extend to serve your needs
+- simpleproxy.py Basic Proxy server easy to extend to serve your needs
 
 
 
